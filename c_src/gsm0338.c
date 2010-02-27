@@ -74,8 +74,10 @@ gsm0338_from_utf8(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     ErlNifBinary utf_bin, gsm_bin;
     int pos, len;
     int outpos = 0, outlen;
+    int b1, b2, b3, b4, cp;
+    int gsm, extended;
+    int i;
     int valid = 1;
-    int b1, b2, b3, b4, cp, gsm, extended;
 
     if (!enif_inspect_binary(env, argv[0], &utf_bin)) {
         return enif_make_badarg(env);
@@ -162,191 +164,37 @@ gsm0338_from_utf8(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 
         /* convert the codepoint to gsm */
         
+        gsm = -1;
         extended = 0;
 
         if ((cp >= 32 && cp <= 35) ||
               (cp >= 37 && cp <= 63) ||
               (cp >= 65 && cp <= 90) ||
               (cp >= 97 && cp <= 122)) {
-           gsm = cp; 
-        } else {
-            switch (cp) {
-            case 0x0040: /* COMMERCIAL AT */
-                gsm = 0x00;
-                break;
-            case 0x00A3: /* POUND SIGN */
-                gsm = 0x01;
-                break;
-            case 0x0024: /* DOLLAR SIGN */
-                gsm = 0x02;
-                break;
-            case 0x00A5: /* YEN SIGN */
-                gsm = 0x03;
-                break;
-            case 0x00E8: /* LATIN SMALL LETTER E WITH GRAVE */
-                gsm = 0x04;
-                break;
-            case 0x00E9: /* LATIN SMALL LETTER E WITH ACUTE */
-                gsm = 0x05;
-                break;
-            case 0x00F9: /* LATIN SMALL LETTER U WITH GRAVE */
-                gsm = 0x06;
-                break;
-            case 0x00EC: /* LATIN SMALL LETTER I WITH GRAVE */
-                gsm = 0x07;
-                break;
-            case 0x00F2: /* LATIN SMALL LETTER O WITH GRAVE */
-                gsm = 0x08;
-                break;
-            case 0x00E7: /* LATIN SMALL LETTER C WITH CEDILLA */
-                gsm = 0x09;
-                break;
-            case 0x000A: /* LINE FEED */
-                gsm = 0x0A;
-                break;
-            case 0x00D8: /* LATIN CAPITAL LETTER O WITH STROKE */
-                gsm = 0x0B;
-                break;
-            case 0x00F8: /* LATIN SMALL LETTER O WITH STROKE */
-                gsm = 0x0C;
-                break;
-            case 0x000D: /* CARRIAGE RETURN */
-                gsm = 0x0D;
-                break;
-            case 0x00C5: /* LATIN CAPITAL LETTER A WITH RING ABOVE */
-                gsm = 0x0E;
-                break;
-            case 0x00E5: /* LATIN SMALL LETTER A WITH RING ABOVE */
-                gsm = 0x0F;
-                break;
-            case 0x0394: /* GREEK CAPITAL LETTER DELTA */
-                gsm = 0x10;
-                break;
-            case 0x005F: /* LOW LINE */
-                gsm = 0x11;
-                break;
-            case 0x03A6: /* GREEK CAPITAL LETTER PHI */
-                gsm = 0x12;
-                break;
-            case 0x0393: /* GREEK CAPITAL LETTER GAMMA */
-                gsm = 0x13;
-                break;
-            case 0x039B: /* GREEK CAPITAL LETTER LAMDA */
-                gsm = 0x14;
-                break;
-            case 0x03A9: /* GREEK CAPITAL LETTER OMEGA */
-                gsm = 0x15;
-                break;
-            case 0x03A0: /* GREEK CAPITAL LETTER PI */
-                gsm = 0x16;
-                break;
-            case 0x03A8: /* GREEK CAPITAL LETTER PSI */
-                gsm = 0x17;
-                break;
-            case 0x03A3: /* GREEK CAPITAL LETTER SIGMA */
-                gsm = 0x18;
-                break;
-            case 0x0398: /* GREEK CAPITAL LETTER THETA */
-                gsm = 0x19;
-                break;
-            case 0x039E: /* GREEK CAPITAL LETTER XI */
-                gsm = 0x1A;
-                break;
-            case 0x00C6: /* LATIN CAPITAL LETTER AE */
-                gsm = 0x1C;
-                break;
-            case 0x00E6: /* LATIN SMALL LETTER AE */
-                gsm = 0x1D;
-                break;
-            case 0x00DF: /* LATIN SMALL LETTER SHARP S (German) */
-                gsm = 0x1E;
-                break;
-            case 0x00C9: /* LATIN CAPITAL LETTER E WITH ACUTE */
-                gsm = 0x1F;
-                break;
-            case 0x00A4: /* CURRENCY SIGN */
-                gsm = 0x24;
-                break;
-            case 0x00A1: /* INVERTED EXCLAMATION MARK */
-                gsm = 0x40;
-                break;
-            case 0x00C4: /* LATIN CAPITAL LETTER A WITH DIAERESIS */
-                gsm = 0x5B;
-                break;
-            case 0x00D6: /* LATIN CAPITAL LETTER O WITH DIAERESIS */
-                gsm = 0x5C;
-                break;
-            case 0x00D1: /* LATIN CAPITAL LETTER N WITH TILDE */
-                gsm = 0x5D;
-                break;
-            case 0x00DC: /* LATIN CAPITAL LETTER U WITH DIAERESIS */
-                gsm = 0x5E;
-                break;
-            case 0x00A7: /* SECTION SIGN */
-                gsm = 0x5F;
-                break;
-            case 0x00BF: /* INVERTED QUESTION MARK */
-                gsm = 0x60;
-                break;
-            case 0x00E4: /* LATIN SMALL LETTER A WITH DIAERESIS */
-                gsm = 0x7B;
-                break;
-            case 0x00F6: /* LATIN SMALL LETTER O WITH DIAERESIS */
-                gsm = 0x7C;
-                break;
-            case 0x00F1: /* LATIN SMALL LETTER N WITH TILDE */
-                gsm = 0x7D;
-                break;
-            case 0x00FC: /* LATIN SMALL LETTER U WITH DIAERESIS */
-                gsm = 0x7E;
-                break;
-            case 0x00E0: /* LATIN SMALL LETTER A WITH GRAVE */
-                gsm = 0x7F;
-                break;
-            case 0x000C: /* FORM FEED */
-                gsm = 0x0A;
-                extended = 1;
-                break;
-            case 0x005E: /* CIRCUMFLEX ACCENT */
-                gsm = 0x14;
-                extended = 1;
-                break;
-            case 0x007B: /* LEFT CURLY BRACKET */
-                gsm = 0x28;
-                extended = 1;
-                break;
-            case 0x007D: /* RIGHT CURLY BRACKET */
-                gsm = 0x29;
-                extended = 1;
-                break;
-            case 0x005C: /* REVERSE SOLIDUS */
-                gsm = 0x2F;
-                extended = 1;
-                break;
-            case 0x005B: /* LEFT SQUARE BRACKET */
-                gsm = 0x3C;
-                extended = 1;
-                break;
-            case 0x007E: /* TILDE */
-                gsm = 0x3D;
-                extended = 1;
-                break;
-            case 0x005D: /* RIGHT SQUARE BRACKET */
-                gsm = 0x3E;
-                extended = 1;
-                break;
-            case 0x007C: /* VERTICAL LINE */
-                gsm = 0x40;
-                extended = 1;
-                break;
-            case 0x20AC: /* EURO SIGN */
-                gsm = 0x65;
-                extended = 1;
-                break;
-            default: /* '?' */
-                gsm = 0x3F;
+            gsm = cp;
+        }
+
+        if (gsm == -1) {
+            for (i = 0; i < 128; i++) {
+                if (gsm_to_code_point[i] == cp) {
+                    gsm = i;
+                    break;
+                }
             }
         }
+
+        if (gsm == -1) {
+            for (i = 0; i < 10; i++) {
+                if (gsm_exts[i].code_point == cp) {
+                    gsm = gsm_exts[i].gsm_ext;
+                    extended = 1;
+                    break;
+                }
+            }
+        }
+
+        if (gsm == -1)
+            gsm = 0x3F; /* '?' */
 
         if (outlen < outpos + extended + 1) {
             outlen = outpos + extended + 1;
