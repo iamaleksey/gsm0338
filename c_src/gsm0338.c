@@ -73,9 +73,9 @@ gsm0338_from_utf8(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
     ErlNifBinary utf_bin, gsm_bin;
     int pos, len;
-    int outpos = 0, outlen, outbytes;
+    int outpos = 0, outlen;
     int valid = 1;
-    int b1, b2, b3, b4, cp, gsm, extended, i;
+    int b1, b2, b3, b4, cp, gsm, extended;
 
     if (!enif_inspect_binary(env, argv[0], &utf_bin)) {
         return enif_make_badarg(env);
