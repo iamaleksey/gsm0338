@@ -20,16 +20,30 @@
 
 -module(gsm0338).
 
+
 -on_load(load_nif/0).
+
 
 -export([from_utf8/1, to_utf8/1]).
 
+
+-spec from_utf8/1 :: (binary()) -> {'valid', binary()} | {'invalid', binary()}.
+
 from_utf8(Bin) ->
-  erlang:error(function_clause, [Bin]).
+    erlang:error(function_clause, [Bin]).
+
+
+-spec to_utf8/1 :: (binary()) -> {'valid', binary()} | {'invalid', binary()}.
 
 to_utf8(Bin) ->
-  erlang:error(function_clause, [Bin]).
+    erlang:error(function_clause, [Bin]).
+
+
+%% -------------------------------------------------------------------------
+%% on_load callback
+%% -------------------------------------------------------------------------
+
 
 load_nif() ->
-  Path = filename:join(code:priv_dir(gsm0338), "gsm0338"),
-  erlang:load_nif(Path, 0).
+    Path = filename:join(code:priv_dir(gsm0338), "gsm0338"),
+    erlang:load_nif(Path, 0).
