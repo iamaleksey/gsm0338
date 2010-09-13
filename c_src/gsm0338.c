@@ -91,7 +91,7 @@ gsm0338_from_utf8(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 
     outlen = utf_bin.size;
 
-    if (!enif_alloc_binary(env, outlen, &gsm_bin)) {
+    if (!enif_alloc_binary(outlen, &gsm_bin)) {
         return ENOMEMERROR;
     }
 
@@ -198,8 +198,8 @@ gsm0338_from_utf8(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 
         if (outlen < outpos + extended + 1) {
             outlen = outpos + extended + 1;
-            if (!enif_realloc_binary(env, &gsm_bin, outlen)) {
-                enif_release_binary(env, &gsm_bin);
+            if (!enif_realloc_binary(&gsm_bin, outlen)) {
+                enif_release_binary(&gsm_bin);
                 return ENOMEMERROR;
             }
         }
@@ -212,7 +212,7 @@ gsm0338_from_utf8(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 
     /* trim */
     if (outpos < outlen)
-        enif_realloc_binary(env, &gsm_bin, outpos);
+        enif_realloc_binary(&gsm_bin, outpos);
 
     if (valid) { 
         return VALID(&gsm_bin);
@@ -242,7 +242,7 @@ gsm0338_to_utf8(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 
     outlen = gsm_bin.size;
 
-    if (!enif_alloc_binary(env, outlen, &utf_bin)) {
+    if (!enif_alloc_binary(outlen, &utf_bin)) {
         return ENOMEMERROR;
     }
 
@@ -281,8 +281,8 @@ gsm0338_to_utf8(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
             /* single byte */
             if (outlen < outpos + 1) {
                 outlen += 1;
-                if (!enif_realloc_binary(env, &utf_bin, outlen)) {
-                    enif_release_binary(env, &utf_bin);
+                if (!enif_realloc_binary(&utf_bin, outlen)) {
+                    enif_release_binary(&utf_bin);
                     return ENOMEMERROR;
                 }
             }
@@ -291,8 +291,8 @@ gsm0338_to_utf8(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
             /* two bytes */
             if (outlen < outpos + 2) {
                 outlen = outpos + 2;
-                if (!enif_realloc_binary(env, &utf_bin, outlen)) {
-                    enif_release_binary(env, &utf_bin);
+                if (!enif_realloc_binary(&utf_bin, outlen)) {
+                    enif_release_binary(&utf_bin);
                     return ENOMEMERROR;
                 }
             }
@@ -302,8 +302,8 @@ gsm0338_to_utf8(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
             /* euro sign */
             if (outlen < outpos + 3) {
                 outlen = outpos + 3;
-                if (!enif_realloc_binary(env, &utf_bin, outlen)) {
-                    enif_release_binary(env, &utf_bin);
+                if (!enif_realloc_binary(&utf_bin, outlen)) {
+                    enif_release_binary(&utf_bin);
                     return ENOMEMERROR;
                 }
             }
@@ -315,7 +315,7 @@ gsm0338_to_utf8(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 
     /* trim */
     if (outpos < outlen)
-        enif_realloc_binary(env, &utf_bin, outpos);
+        enif_realloc_binary(&utf_bin, outpos);
 
     if (valid) { 
         return VALID(&utf_bin);
