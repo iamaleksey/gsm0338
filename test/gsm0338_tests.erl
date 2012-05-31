@@ -10,7 +10,7 @@
          {[16#0C, 16#0D, 16#0E, 16#0F], [16#00F8, 16#000D, 16#00C5, 16#00E5]},
          {[16#10, 16#11, 16#12, 16#13], [16#0394, 16#005F, 16#03A6, 16#0393]},
          {[16#14, 16#15, 16#16, 16#17], [16#039B, 16#03A9, 16#03A0, 16#03A8]},
-         %{[16#18, 16#19, 16#1A, 16#1B], [16#03A3, 16#0398, 16#039E, 16#00A0]},
+         {[16#18, 16#19, 16#1A, 16#1B], [16#03A3, 16#0398, 16#039E, 16#00A0]},
          {[16#1B,16#0A, 16#1B,16#14, 16#1B,16#28, 16#1B,16#29, 16#1B,16#2F],
           [16#000C,     16#005E,     16#007B,     16#007D,     16#005C]},
          {[16#1B,16#3C, 16#1B,16#3D, 16#1B,16#3E, 16#1B,16#40, 16#1B,16#65],
@@ -43,19 +43,19 @@
         ]).
 
 to_utf8_empty_test() ->
-    ?assertEqual({valid, <<>>}, gsm0338:to_utf8(<<>>)).
+    ?assertEqual(<<>>, gsm0338:to_utf8(<<>>)).
 
 from_utf8_empty_test() ->
-    ?assertEqual({valid, <<>>}, gsm0338:from_utf8(<<>>)).
+    ?assertEqual(<<>>, gsm0338:from_utf8(<<>>)).
 
 to_utf8_valid_test() ->
     lists:foreach(fun({GSM0338, UTF8}) ->
-                      ?assertEqual({valid, unicode:characters_to_binary(UTF8)},
+                      ?assertEqual(unicode:characters_to_binary(UTF8),
                                    gsm0338:to_utf8(list_to_binary(GSM0338)))
                   end, ?MAPPING).
 
 from_utf8_valid_test() ->
     lists:foreach(fun({GSM0338, UTF8}) ->
-                      ?assertEqual({valid, list_to_binary(GSM0338)},
-                                   gsm0338:from_utf8(unicode:characters_to_binary(UTF8)))
+                ?assertEqual(list_to_binary(GSM0338),
+                             gsm0338:from_utf8(unicode:characters_to_binary(UTF8)))
                   end, ?MAPPING).
