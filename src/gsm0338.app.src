@@ -1,6 +1,4 @@
 {application, gsm0338,
- [
-  {description, "GSM 03.38 <-> utf8 converter"},
+ [{description, "GSM 03.38 <-> utf8 converter"},
   {vsn, "1.0"},
-  {applications, [kernel, stdlib]}
- ]}.
+  {applications, [kernel, stdlib]}]}.
