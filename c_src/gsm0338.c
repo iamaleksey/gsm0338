@@ -22,11 +22,6 @@
 
 #include "erl_nif.h"
 
-static const struct { int gsm_ext; int code_point; } gsm_exts[] = {
-    {0x0A, 0x000C}, {0x14, 0x005E}, {0x28, 0x007B}, {0x29, 0x007D}, {0x2F, 0x005C},
-    {0x3C, 0x005B}, {0x3D, 0x007E}, {0x3E, 0x005D}, {0x40, 0x007C}, {0x65, 0x20AC}
-};
-
 static const int gsm_to_code_point[128] = {
     0x0040, 0x00A3, 0x0024, 0x00A5, 0x00E8, 0x00E9, 0x00F9, 0x00EC,
     0x00F2, 0x00E7, 0x000A, 0x00D8, 0x00F8, 0x000D, 0x00C5, 0x00E5,
@@ -44,6 +39,28 @@ static const int gsm_to_code_point[128] = {
     'h',    'i',    'j',    'k',    'l',    'm',    'n',    'o',
     'p',    'q',    'r',    's',    't',    'u',    'v',    'w',
     'x',    'y',    'z',    0x00E4, 0x00F6, 0x00F1, 0x00FC, 0x00E0
+};
+
+static const struct { int gsm_ext; int code_point; } gsm_exts[] = {
+    {0x0A, 0x000C}, {0x14, 0x005E}, {0x28, 0x007B}, {0x29, 0x007D}, {0x2F, 0x005C},
+    {0x3C, 0x005B}, {0x3D, 0x007E}, {0x3E, 0x005D}, {0x40, 0x007C}, {0x65, 0x20AC}
+};
+
+static const struct { int code_point; int gsm; } greek_capitals[] = {
+    {0x0391, 0x41}, /* GREEK CAPITAL LETTER ALPHA   */
+    {0x0392, 0x42}, /* GREEK CAPITAL LETTER BETA    */
+    {0x0395, 0x45}, /* GREEK CAPITAL LETTER EPSILON */
+    {0x0397, 0x48}, /* GREEK CAPITAL LETTER ETA     */
+    {0x0399, 0x49}, /* GREEK CAPITAL LETTER IOTA    */
+    {0x039A, 0x4B}, /* GREEK CAPITAL LETTER KAPPA   */
+    {0x039C, 0x4D}, /* GREEK CAPITAL LETTER MU      */
+    {0x039D, 0x4E}, /* GREEK CAPITAL LETTER NU      */
+    {0x039F, 0x4F}, /* GREEK CAPITAL LETTER OMICRON */
+    {0x03A1, 0x50}, /* GREEK CAPITAL LETTER RHO     */
+    {0x03A4, 0x54}, /* GREEK CAPITAL LETTER TAU     */
+    {0x03A7, 0x58}, /* GREEK CAPITAL LETTER CHI     */
+    {0x03A5, 0x59}, /* GREEK CAPITAL LETTER UPSILON */
+    {0x0396, 0x5A}  /* GREEK CAPITAL LETTER ZETA    */
 };
 
 #define VALID(bin)   enif_make_tuple2(env, gsm0338_atoms.valid,   enif_make_binary(env, bin))
@@ -163,7 +180,6 @@ gsm0338_from_utf8(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         }
 
         /* convert the codepoint to gsm */
-        
         gsm = -1;
         extended = 0;
 
